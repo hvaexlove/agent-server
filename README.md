@@ -3,6 +3,7 @@
 <div>
 
 [![Build Status](https://travis-ci.org/hvaexlove/agent-server.svg?branch=master)](https://travis-ci.org/hvaexlove/agent-server)
+[![Build status](https://ci.appveyor.com/api/projects/status/rkxcl8bc7gs577pp?svg=true)](https://ci.appveyor.com/project/hvaexlove/agent-server)
 
 </div>
 

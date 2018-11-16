@@ -17,6 +17,7 @@
     "repkg": "npm run build && npm run pkg:dev"
   },
   "dependencies": {
+    "cryptiles": ">=4.1.2",
     "@types/node": "^10.12.9",
     "@types/koa-router": "^7.0.32",
     "koa": "^2.5.3",
