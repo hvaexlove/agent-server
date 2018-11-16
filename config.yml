@@ -1,0 +1,27 @@
+# logger
+log:
+	dir: /tmp/
+	max_logger_size: 100
+	max_logger_backups: 3
+	days_to_keep: 1
+
+# server
+server:
+	server_host: localhost
+	server_port: 6690
+
+# mysql
+mysql:
+	db_server: 118.25.5.29
+	db_port: 3306
+	database: agent
+	user: root
+	password: 745764370HExu..
+
+# public
+public:
+	domain: agent-s.herokuapp.com
+	linux_agent_download_url: https://ddos2-1254111015.cos.ap-shanghai.myqcloud.com/agent/agent.tar.gz
+	macos_agent_download_url: https://ddos2-1254111015.cos.ap-shanghai.myqcloud.com/agent/agent.tar.gz
+	win_agent_download_url: https://ddos2-1254111015.cos.ap-shanghai.myqcloud.com/agent/agent.tar.gz
+	

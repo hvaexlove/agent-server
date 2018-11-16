@@ -1,0 +1,1 @@
+export declare const Path: (path: string) => Function;
