@@ -10,7 +10,7 @@ function random(num: number) :string {
     return rnd;
 }
 
-exports.getId = () :string => {
+let getId = () :string => {
     let date: Date = new Date();
     let year: number = date.getFullYear();
     let month: number = date.getMonth()+1;
@@ -21,8 +21,8 @@ exports.getId = () :string => {
     let randomStr: string = random(5);
     let idStr: string = `${year}${month}${day}${hour}${minute}${second}${randomStr}`;
     return idStr;
-};
+}
 
-exports.random = (num: number) :string => {
-    return random(num);
-};
+export {
+    getId
+}

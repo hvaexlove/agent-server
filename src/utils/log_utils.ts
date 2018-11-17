@@ -1,8 +1,8 @@
 const log4js = require('log4js');
-const config = require('../config');
+import { getConfig } from '../global';
 
-exports.initLog = () => {
-    var configObj = config.get();
+let initLog4js = () => {
+    var configObj = getConfig();
 
     log4js.configure(
         {
@@ -36,6 +36,10 @@ exports.initLog = () => {
     );
 }
 
-exports.getLog = (fileName: string) => {
+let getLog = (fileName: string) => {
     return log4js.getLogger(fileName);
+}
+
+export {
+    initLog4js, getLog
 }

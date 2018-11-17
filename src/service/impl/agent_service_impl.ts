@@ -1,18 +1,16 @@
+const NodeUuid = require('node-uuid');
 import { AgentService } from '../agent_service';
 import { Request } from '../../protocol/service';
 import BaseService from '../base_service';
 import AgentDao from '../../dao/agent_dao';
 import { Agent } from '../../model/agent_model';
-
-const NodeUuid = require('node-uuid');
-const DateUtils = require('../../utils/date_utils');
-const LogUtils = require('../../utils/log_utils');
-var config = require('../../config');
-var global = require('../../global');
+import { getDate } from '../../utils/date_utils';
+import { getLog } from '../../utils/log_utils';
+import { getConfig, getSocketServer, emit } from '../../global';
 
 class AgentServiceImpl extends BaseService implements AgentService {
 
-    private log: any = LogUtils.getLog('agent_service_impl.ts');
+    private log: any = getLog('agent_service_impl.ts');
     private agentDao: any = new AgentDao();
 
     constructor() {
@@ -23,7 +21,7 @@ class AgentServiceImpl extends BaseService implements AgentService {
         let agent: Agent = {
             uuid: uuid,
             status: status,
-            gmt_modified: DateUtils.getDate()
+            gmt_modified: getDate()
         };
         await this.agentDao.updateStatusByUuid(agent);
     }
@@ -46,20 +44,20 @@ class AgentServiceImpl extends BaseService implements AgentService {
         let oldAgentList: Array<any> = await this.agentDao.getByUuid(agent.uuid);
         oldAgentList = JSON.parse(JSON.stringify(oldAgentList));
         if (!oldAgentList || oldAgentList.length == 0) {
-            agent.gmt_create = DateUtils.getDate();
-            agent.gmt_modified = DateUtils.getDate();
+            agent.gmt_create = getDate();
+            agent.gmt_modified = getDate();
             await this.agentDao.add(agent);
         } else {
             let oldAgent: Agent = oldAgentList[0];
             let updateAgent: Agent = Object.assign(oldAgent, agent);
-            updateAgent.gmt_modified = DateUtils.getDate();
+            updateAgent.gmt_modified = getDate();
             await this.agentDao.update(updateAgent);
         }
     }
 
     public async heartbeat(req: Request) : Promise<any> {
         let uuid: string = req.headerMap.get('uuid');
-        let socketService: any = global.get(uuid);
+        let socketService: any = getSocketServer(uuid);
         socketService.clearHeartbeatCheck();
         socketService.heartbeatCheck();
     }
@@ -77,7 +75,7 @@ class AgentServiceImpl extends BaseService implements AgentService {
 
     public async report(req: Request) : Promise<any> {
         let reqId = req.req_id;
-        global.emit(reqId, req.body);
+        emit(reqId, req.body);
     }
 
     private linuxInstallShell() :Promise<string> {
@@ -85,10 +83,10 @@ class AgentServiceImpl extends BaseService implements AgentService {
             let shell = `#!/bin/sh
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
                                     
-SERVER="${config.get().domain}"
-PORT="${process.env.PORT || config.get().server_port}"
+SERVER="${getConfig().domain}"
+PORT="${process.env.PORT || getConfig().server_port}"
 UUID="${NodeUuid.v4()}"
-AGENT_DOWNLOAD_URL="${config.get().linux_agent_download_url}"
+AGENT_DOWNLOAD_URL="${getConfig().linux_agent_download_url}"
 USER_HOME=$(echo $(cd ~ && pwd))
 AGENT_DIR="\${USER_HOME}/agent"
             
@@ -167,10 +165,10 @@ Clean_Install_Pkg`
             let shell = `#!/bin/sh
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
                                     
-SERVER="${config.get().domain}"
-PORT="${process.env.PORT || config.get().server_port}"
+SERVER="${getConfig().domain}"
+PORT="${process.env.PORT || getConfig().server_port}"
 UUID="${NodeUuid.v4()}"
-AGENT_DOWNLOAD_URL="${config.get().linux_agent_download_url}"
+AGENT_DOWNLOAD_URL="${getConfig().linux_agent_download_url}"
 USER_HOME=$(echo $(cd ~ && pwd))
 AGENT_DIR="\${USER_HOME}/agent"
             

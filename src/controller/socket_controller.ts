@@ -4,14 +4,14 @@ import { AgentService } from '../service/agent_service';
 import { Agent } from '../model/agent_model';
 import { SendMsgVo } from '../model/send_msg_vo';
 import AgentServiceImpl from '../service/impl/agent_service_impl';
-const LogUtils = require('../utils/log_utils');
-var global = require('../global');
+import { getLog } from '../utils/log_utils';
+import { getSocketServer } from '../global';
 
 class SocketController extends BaseController {
 
     private router: any = null;
     private agentService: AgentService = new AgentServiceImpl();
-    private log: any = LogUtils.getLog('socket_controller.ts');
+    private log: any = getLog('socket_controller.ts');
 
     constructor(routerPath: any) {
         super();
@@ -44,7 +44,7 @@ class SocketController extends BaseController {
             super.error(ctx, '请检查agent是否正常启动!');
             return;
         }
-        let socketService: SocketService = global.get(uuid);
+        let socketService: SocketService = getSocketServer(uuid);
         if (!socketService) {
             super.error(ctx, '请检查agent是否正常连接!');
             return;

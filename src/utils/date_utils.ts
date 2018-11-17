@@ -1,4 +1,4 @@
-exports.getDate = () :string => {
+let getDate = () :string => {
     let date: Date = new Date();
     let year: number = date.getFullYear();
     let month: number = date.getMonth()+1;
@@ -9,3 +9,7 @@ exports.getDate = () :string => {
     let dateStr: string = `${year}-${month}-${day} ${hour}:${minute}:${second}`;
     return dateStr;
 };
+
+export {
+    getDate
+}

@@ -1,13 +1,13 @@
 import BaseController from './base_controller';
 import { AgentService } from '../service/agent_service';
 import AgentServiceImpl from '../service/impl/agent_service_impl';
-const LogUtils = require('../utils/log_utils');
+import { getLog } from '../utils/log_utils';
 
 class AgentController extends BaseController {
 
     private router: any = null;
     private agentService: AgentService = new AgentServiceImpl();
-    private log: any = LogUtils.getLog('agent_controller.ts');
+    private log: any = getLog('agent_controller.ts');
 
     constructor(routerPath: any) {
         super();

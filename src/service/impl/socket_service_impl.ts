@@ -4,15 +4,15 @@ import { OptionService } from '../option_service';
 import OptionServiceImpl from './option_service_impl';
 import { AgentService } from '../agent_service';
 import AgentServiceImpl from './agent_service_impl';
-const LogUtils = require('../../utils/log_utils');
-const MapUtils = require('../../utils/map_utils');
-const IdUtils = require('../../utils/id_utils');
-var global = require('../../global');
+import { getLog } from '../../utils/log_utils';
+import { jsonToMap } from '../../utils/map_utils';
+import { getId } from '../../utils/id_utils';
+import { removeSocketServer, on } from '../../global';
 
 class SocketServiceImpl implements SocketService {
 
     private socket: any = null;
-    private log: any = LogUtils.getLog('socket_service_impl.ts');
+    private log: any = getLog('socket_service_impl.ts');
     private uuid: string = null;
     private setTimeoutId:any = null;
     private optionService: OptionService = new OptionServiceImpl();
@@ -36,7 +36,7 @@ class SocketServiceImpl implements SocketService {
 
     private onMessage(req: string) :void {
         let msg: Request = JSON.parse(req);
-        let headerMap: Map<string, any> = MapUtils.jsonToMap(msg.header);
+        let headerMap: Map<string, any> = jsonToMap(msg.header);
         msg.headerMap = headerMap;
         let uuid = headerMap.get('uuid');
         this.uuid = uuid;
@@ -49,7 +49,7 @@ class SocketServiceImpl implements SocketService {
         if (this.uuid) {
             this.agentService.updateStatus(this.uuid, 0);
             this.clearHeartbeatCheck();
-            global.remove(this.uuid);
+            removeSocketServer(this.uuid);
         }
     }
 
@@ -59,7 +59,7 @@ class SocketServiceImpl implements SocketService {
 
     public sendSimpleMsg(target: string, body: any) :void {
         let req: Request = {
-            id: IdUtils.getId(),
+            id: getId(),
             target: target,
             from: null,
             type: 'json',
@@ -77,7 +77,7 @@ class SocketServiceImpl implements SocketService {
         return new Promise((resolve, reject) => {
             let rejectTime: any = null;
             let req: Request = {
-                id: IdUtils.getId(),
+                id: getId(),
                 target: target,
                 from: null,
                 type: 'json',
@@ -89,7 +89,7 @@ class SocketServiceImpl implements SocketService {
                 timeout: 3000
             }
             this.send(req);
-            global.on(req.id, (result: any) => {
+            on(req.id, (result: any) => {
                 if (rejectTime) {
                     clearTimeout(rejectTime);
                 }
@@ -116,7 +116,7 @@ class SocketServiceImpl implements SocketService {
         this.setTimeoutId = setTimeout(() => {
             if (this.uuid) {
                 this.agentService.updateStatus(this.uuid, 0);
-                global.remove(this.uuid);
+                removeSocketServer(this.uuid);
             }
         }, 30000);
     }

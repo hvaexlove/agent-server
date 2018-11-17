@@ -2,7 +2,7 @@ import BusinessException from './business_exception';
 /**
  * 吃住所有异常 进行分类处理
  */
-exports.initErrorHandler = () => {
+let initErrorHandler = () => {
     process.on('uncaughtException', (error) => {
         if (error instanceof BusinessException) {
             console.log(error.getMessage());
@@ -13,4 +13,8 @@ exports.initErrorHandler = () => {
             console.log(error);
         }
     });
+}
+
+export {
+    initErrorHandler
 }

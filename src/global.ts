@@ -2,12 +2,21 @@ let mysqlPool: any = null;
 let socketServers: Array<any> = new Array();
 let server: any = null;
 let eventMap: Map<string, any> = new Map<string, any>();
+let configObj: any = null;
 
-module.exports.push = (socket: any) => {
+let setConfig = (config: object) => {
+    configObj = config;
+}
+
+let getConfig = () => {
+    return configObj;
+}
+
+let pushSocketServer = (socket: any) => {
     socketServers.push(socket);
 }
 
-module.exports.remove = (uuid: string) => {
+let removeSocketServer = (uuid: string) => {
 
     let i = 0;
     for (; i < socketServers.length; i++) {
@@ -19,7 +28,7 @@ module.exports.remove = (uuid: string) => {
     socketServers.splice(i, 1);
 }
 
-module.exports.get = (uuid: string) => {
+let getSocketServer = (uuid: string) => {
     for (let i = 0; i < socketServers.length; i++) {
         let socketClient: any = socketServers[i];
         if (socketClient.getUuid() === uuid) {
@@ -28,7 +37,7 @@ module.exports.get = (uuid: string) => {
     }
 }
 
-module.exports.set = (uuid: string, socket: any) => {
+let setSocketServer = (uuid: string, socket: any) => {
     let i = 0;
     for (; i < socketServers.length; i++) {
         let socketClient: any = socketServers[i];
@@ -39,33 +48,37 @@ module.exports.set = (uuid: string, socket: any) => {
     socketServers[i] = socket;
 }
 
-module.exports.getAll = () => {
+let getAllSocketServer = () => {
     return socketServers;
 }
 
-module.exports.setPool = (pool: any) => {
+let setPool = (pool: any) => {
     mysqlPool = pool
 }
 
-module.exports.getPool = () => {
+let getPool = () => {
     return mysqlPool;
 }
 
-module.exports.setServer = (httpServer: any) => {
+let setHttpServer = (httpServer: any) => {
     server = httpServer;
 }
 
-module.exports.getServer = () => {
+let getHttpServer = () => {
     return server;
 }
 
-module.exports.on = (key: string, fn: any) => {
+let on = (key: string, fn: any) => {
     eventMap.set(key, fn);
 }
 
-module.exports.emit = (key: string, result: any) => {
+let emit = (key: string, result: any) => {
     let fn = eventMap.get(key);
     if (fn && typeof fn === 'function') {
         fn(result);
     }
+}
+
+export {
+    setConfig, getConfig, pushSocketServer, removeSocketServer, getSocketServer, setSocketServer, getAllSocketServer, setPool, getPool, setHttpServer, getHttpServer, on, emit
 }
