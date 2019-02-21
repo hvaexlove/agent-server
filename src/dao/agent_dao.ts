@@ -1,10 +1,10 @@
-var global = require('../global');
-const LogUtils = require('../utils/log_utils');
+import { getPool } from '../global';
+import { getLog } from '../utils/log_utils';
 import { Agent } from '../model/agent_model';
 
 class AgentDao {
 
-    private log: any = LogUtils.getLog('agent_dao.ts');
+    private log: any = getLog('agent_dao.ts');
 
     constructor() {
         
@@ -16,7 +16,7 @@ class AgentDao {
      */
     public add(agent: Agent) :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('INSERT agent (`uuid`, `status`, `host_name`, `os_type`, `os_platform`, `os_version`, `os_totalmem`, `os_arch`, `remark`, `version`, `ip`, `gmt_create`, `gmt_modified`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            getPool().query('INSERT agent (`uuid`, `status`, `host_name`, `os_type`, `os_platform`, `os_version`, `os_totalmem`, `os_arch`, `remark`, `version`, `ip`, `gmt_create`, `gmt_modified`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
                 , [agent.uuid, agent.status, agent.host_name, agent.os_type, agent.os_platform, agent.os_version, agent.os_totalmem, agent.os_arch, agent.remark, agent.version, agent.ip, agent.gmt_create, agent.gmt_modified]
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
@@ -32,7 +32,7 @@ class AgentDao {
      */
     public update(agent: Agent) :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('UPDATE agent SET `status` = ?, `host_name` = ?, `os_type` = ?, `os_platform` = ?, `os_version` = ?, `os_totalmem` = ?, `os_arch` = ?, `remark` = ?, `version` = ?, `ip` = ?, `gmt_modified` = ? WHERE `id` = ?'
+            getPool().query('UPDATE agent SET `status` = ?, `host_name` = ?, `os_type` = ?, `os_platform` = ?, `os_version` = ?, `os_totalmem` = ?, `os_arch` = ?, `remark` = ?, `version` = ?, `ip` = ?, `gmt_modified` = ? WHERE `id` = ?'
                 , [agent.status, agent.host_name, agent.os_type, agent.os_platform, agent.os_version, agent.os_totalmem, agent.os_arch, agent.remark, agent.version, agent.ip, agent.gmt_modified, agent.id]
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
@@ -48,7 +48,7 @@ class AgentDao {
      */
     public updateStatusByUuid(agent: Agent) :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('UPDATE agent SET `status` = ?, `gmt_modified` = ? WHERE `uuid` = ?'
+            getPool().query('UPDATE agent SET `status` = ?, `gmt_modified` = ? WHERE `uuid` = ?'
                 , [agent.status, agent.gmt_modified, agent.uuid]
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
@@ -65,7 +65,7 @@ class AgentDao {
      */
     public list(start: number, limit: number) :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('SELECT * FROM agent LIMIT ?, ?'
+            getPool().query('SELECT * FROM agent LIMIT ?, ?'
                 , [start, limit]
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
@@ -80,7 +80,7 @@ class AgentDao {
      */
     public count() :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('SELECT COUNT(1) AS count FROM agent'
+            getPool().query('SELECT COUNT(1) AS count FROM agent'
                 , []
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
@@ -96,7 +96,7 @@ class AgentDao {
      */
     public getById(id: number) :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('SELECT * FROM agent WHERE `id` = ?'
+            getPool().query('SELECT * FROM agent WHERE `id` = ?'
                 , [id]
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
@@ -112,7 +112,7 @@ class AgentDao {
      */
     public getByUuid(uuid: string) :Promise<any> {
         return new Promise((resolve, reject) => {
-            global.getPool().query('SELECT * FROM agent WHERE `uuid` = ?'
+            getPool().query('SELECT * FROM agent WHERE `uuid` = ?'
                 , [uuid]
                 , (error: any, results: any, fields: any) => {
                     if (error) throw error;
